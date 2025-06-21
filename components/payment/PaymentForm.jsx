@@ -26,14 +26,14 @@ const PaymentForm = () => {
       <div className="my-4 space-y-2">
         <span>Check in</span>
         <h4 className="mt-2">
-          <input type="date" name="checkin" id="checkin" />
+          <input className="w-full px-4 py-2 rounded-md border border-black/20 bg-transparent" type="date" name="checkin" id="checkin" />
         </h4>
       </div>
 
       <div className="my-4 space-y-2">
         <span>Checkout</span>
         <h4 className="mt-2">
-          <input type="date" name="checkout" id="checkout" />
+          <input className="w-full px-4 py-2 rounded-md border border-black/20 bg-transparent" type="date" name="checkout" id="checkout" />
         </h4>
       </div>
 
@@ -70,7 +70,7 @@ const PaymentForm = () => {
         />
       </div>
 
-      <button type="submit" className="btn-primary w-full">
+      <button type="submit" className="bg-[#FF6A28] px-8 py-2 rounded-md block text-white font-bold shadow-lg hover:shadow-primary/50 active:scale-95 transition-all w-full">
         Pay Now ($10)
       </button>
     </form>
