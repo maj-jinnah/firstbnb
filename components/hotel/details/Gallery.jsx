@@ -1,6 +1,6 @@
 const Gallery = () => {
   return (
-    <section className="container">
+    <section className="max-w-7xl mx-auto w-full px-4">
       <div className="grid grid-cols-2 imageshowCase">
         <img src="./assets/images/1.png" className="h-[400px]" alt="" />
 

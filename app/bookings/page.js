@@ -6,12 +6,12 @@ const BookingsPage = () => {
     return (
         <>
             <section className="mt-[100px]">
-                <div className="container">
+                <div className="max-w-7xl mx-auto w-full px-4">
                     <ProfileInfo />
                 </div>
             </section>
             <section>
-                <div className="container">
+                <div className="max-w-7xl mx-auto w-full px-4">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <PastBooking />
                         <UpcomingBooking />

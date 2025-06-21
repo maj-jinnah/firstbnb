@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { Geist, Geist_Mono } from "next/font/google";
+import { dbConnect } from "@/db/dbConnection";
 import "./globals.css";
-import { dbConnect } from "./db/dbConnection";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +19,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  
+
   await dbConnect();
 
   return (

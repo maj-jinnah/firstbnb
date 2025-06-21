@@ -1,4 +1,4 @@
-import { hotelModel } from "@/app/models/hotel-model";
+import { hotelModel } from "@/models/hotel-model";
 
 export async function getAllHotels() {
     const hotels = await hotelModel.find();

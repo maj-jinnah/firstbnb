@@ -1,7 +1,7 @@
 const HotelSummaryInfo = ({fromListPage}) => {
   return (
     <>
-      <div className={fromListPage ? "flex-1" : "flex-1 container"}>
+      <div className={fromListPage ? "flex-1" : "flex-1 max-w-7xl mx-auto w-full px-4"}>
         <h2 className={fromListPage ? "font-bold text-lg" : "font-bold text-2xl"}>Effotel By Sayaji Jaipur</h2>
         <p>📍 Kolkata</p>
         <div className="flex gap-2 items-center my-4">
