@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { Geist, Geist_Mono } from "next/font/google";
 import { dbConnect } from "@/db/dbConnection";
-import "./globals.css";
+import "../globals.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +27,7 @@ export default async function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
+        <Navbar login={true} />
         <main>
           {children}
         </main>
