@@ -17,9 +17,16 @@ export const POST = async (request) => {
     }
 
     try {
+        const isUserExists = await userModel.findOne({ email });
+
+        if (isUserExists) {
+            return new NextResponse(JSON.stringify({ message: "User already exists." }), { status: 400 });
+        }
+
         await userModel.create(newUser);
-        return new NextResponse(JSON.stringify({ message: "successfully created a new user." }), { status: 201 });
+        return new NextResponse(JSON.stringify({ message: "Successfully created a new user." }), { status: 201 });
     } catch (error) {
-        return new NextResponse(JSON.stringify({ message: "failed to create a new user." }), { status: 500 });
+        console.error("Error creating user:", error);
+        return new NextResponse(JSON.stringify({ message: "Failed to create a new user." }), { status: 500 });
     }
 };

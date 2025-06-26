@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 const RegistrationForm = () => {
-    const [error, setError] = useState("");
+    // const [error, setError] = useState("");
     const router = useRouter();
 
     const handelSubmit = async (e) => {
@@ -13,7 +13,6 @@ const RegistrationForm = () => {
 
         try {
             const formData = new FormData(e.currentTarget);
-
             const fname = formData.get("fname");
             const lname = formData.get("lname");
             const email = formData.get("email");
@@ -27,11 +26,17 @@ const RegistrationForm = () => {
                 body: JSON.stringify({ fname, lname, email, password }),
             });
 
+            const responseData = await response.json();
+
             if (response.status === 201) {
-                toast.success("Successfully created a new user.");
+                toast.success(
+                    responseData.message || "Successfully created a new user."
+                );
                 router.push("/login");
-            } else{
-              setError(response.error.message);
+            } else {
+                console.log(responseData);
+                toast.error(responseData.message);
+                // setError(responseData.message || "Something went wrong.");
             }
         } catch (error) {
             setError(error.message);
@@ -40,9 +45,9 @@ const RegistrationForm = () => {
 
     return (
         <>
-            {error && (
+            {/* {error && (
                 <div className="text-red-500 text-md text-center">{error}</div>
-            )}
+            )} */}
 
             <form onSubmit={handelSubmit} className="flex flex-col my-6">
                 <div className="flex flex-col gap-2 my-2">
@@ -52,6 +57,7 @@ const RegistrationForm = () => {
                         type="text"
                         name="fname"
                         id="fname"
+                        required
                     />
                 </div>
 
@@ -72,6 +78,7 @@ const RegistrationForm = () => {
                         type="email"
                         name="email"
                         id="email"
+                        required
                     />
                 </div>
 
@@ -82,6 +89,7 @@ const RegistrationForm = () => {
                         type="password"
                         name="password"
                         id="password"
+                        required
                     />
                 </div>
 

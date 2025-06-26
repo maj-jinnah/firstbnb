@@ -61,7 +61,6 @@ const LoginForm = () => {
             const response = await loginUsingCredentials(formData);
 
             if (!response.success) {
-                // console.log("try block error:", response.error);
                 toast.error(
                     response.error ||
                         "Something went wrong. Please try again later."
@@ -72,7 +71,6 @@ const LoginForm = () => {
             toast.success("Successfully logged in.");
             router.push("/bookings");
         } catch (error) {
-            // console.log("catch block error:", error.message);
             toast.error(
                 error.message || "Something went wrong. Please try again."
             );
@@ -92,6 +90,7 @@ const LoginForm = () => {
                         type="email"
                         name="email"
                         id="email"
+                        required
                     />
                 </div>
 
@@ -102,6 +101,7 @@ const LoginForm = () => {
                         type="password"
                         name="password"
                         id="password"
+                        required
                     />
                 </div>
 
