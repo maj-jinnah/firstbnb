@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import { Geist, Geist_Mono } from "next/font/google";
 import { dbConnect } from "@/db/dbConnection";
 import "../globals.css"
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,7 @@ export default async function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navbar login={true} />
+        <ToastContainer />
         <main>
           {children}
         </main>

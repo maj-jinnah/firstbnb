@@ -2,9 +2,9 @@
 
 import { signIn } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 
-const SocialLogins = () => {
-  
+const SocialLogins = ({ mode }) => {
     const handelAuth = (event) => {
         signIn("google", { callbackUrl: "http://localhost:3000/bookings" });
     };
@@ -12,6 +12,16 @@ const SocialLogins = () => {
     return (
         <>
             <div className="text-center text-xs text-gray-500">
+                {mode === "login" ? (
+                    <Link href="/register" className="font-bold underline">
+                        Register{" "}
+                    </Link>
+                ) : (
+                    <Link href="/login" className="font-bold underline">
+                        Login{" "}
+                    </Link>
+                )}
+                {/*   */}
                 or Signup with
             </div>
             <div className="flex gap-4">

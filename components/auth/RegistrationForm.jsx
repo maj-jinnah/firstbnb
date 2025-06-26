@@ -1,31 +1,99 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "react-toastify";
+
 const RegistrationForm = () => {
-  return (
-    <form className="flex flex-col my-6">
-      <div className="flex flex-col gap-2 my-2">
-        <label htmlFor="fname">First Name</label>
-        <input className="border border-black/20 rounded-md px-4 py-2" type="text" name="fname" id="fname" />
-      </div>
+    const [error, setError] = useState("");
+    const router = useRouter();
 
-      <div className="flex flex-col gap-2 my-2">
-        <label htmlFor="lname">Last Name</label>
-        <input className="border border-black/20 rounded-md px-4 py-2" type="text" name="lname" id="lname" />
-      </div>
+    const handelSubmit = async (e) => {
+        e.preventDefault();
 
-      <div className="flex flex-col gap-2 my-2">
-        <label htmlFor="email">Email Address</label>
-        <input className="border border-black/20 rounded-md px-4 py-2" type="email" name="email" id="email" />
-      </div>
+        try {
+            const formData = new FormData(e.currentTarget);
 
-      <div className="flex flex-col gap-2 my-2">
-        <label htmlFor="password">Password</label>
-        <input className="border border-black/20 rounded-md px-4 py-2" type="password" name="password" id="password" />
-      </div>
+            const fname = formData.get("fname");
+            const lname = formData.get("lname");
+            const email = formData.get("email");
+            const password = formData.get("password");
 
-      <button type="submit" className="bg-[#FF6A28] px-8 py-2 rounded-md block text-white font-bold shadow-lg hover:shadow-primary/50 active:scale-95 transition-all w-full mt-4">
-        Create account
-      </button>
-    </form>
-  );
+            const response = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ fname, lname, email, password }),
+            });
+
+            if (response.status === 201) {
+                toast.success("Successfully created a new user.");
+                router.push("/login");
+            } else{
+              setError(response.error.message);
+            }
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+    return (
+        <>
+            {error && (
+                <div className="text-red-500 text-md text-center">{error}</div>
+            )}
+
+            <form onSubmit={handelSubmit} className="flex flex-col my-6">
+                <div className="flex flex-col gap-2 my-2">
+                    <label htmlFor="fname">First Name</label>
+                    <input
+                        className="border border-black/20 rounded-md px-4 py-2"
+                        type="text"
+                        name="fname"
+                        id="fname"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-2 my-2">
+                    <label htmlFor="lname">Last Name</label>
+                    <input
+                        className="border border-black/20 rounded-md px-4 py-2"
+                        type="text"
+                        name="lname"
+                        id="lname"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-2 my-2">
+                    <label htmlFor="email">Email Address</label>
+                    <input
+                        className="border border-black/20 rounded-md px-4 py-2"
+                        type="email"
+                        name="email"
+                        id="email"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-2 my-2">
+                    <label htmlFor="password">Password</label>
+                    <input
+                        className="border border-black/20 rounded-md px-4 py-2"
+                        type="password"
+                        name="password"
+                        id="password"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    className="bg-[#FF6A28] px-8 py-2 rounded-md block text-white font-bold shadow-lg hover:shadow-primary/50 active:scale-95 transition-all w-full mt-4"
+                >
+                    Create account
+                </button>
+            </form>
+        </>
+    );
 };
 
 export default RegistrationForm;
