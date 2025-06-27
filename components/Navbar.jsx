@@ -22,6 +22,10 @@ const Navbar = async ({ login }) => {
             {login && (
                 <ul className="hidden md:flex items-center gap-6">
                     <li>
+                        <Link href="/hotels">Hotels</Link>
+                    </li>
+
+                    <li>
                         <Link href="#">About Us</Link>
                     </li>
 
@@ -33,7 +37,7 @@ const Navbar = async ({ login }) => {
                         <Link href="/bookings">Bookings</Link>
                     </li>
 
-                    <li>
+                    <li className="mr-10">
                         {session?.user ? (
                             <div>
                                 <span className="font-bold text-[#FF6A28]">{session?.user?.name}</span>
