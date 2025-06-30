@@ -1,21 +1,20 @@
-import Summary from "@/components/hotel/details/Summary"
-import Gallery from "@/components/hotel/details/Gallery"
-import Overview from "@/components/hotel/details/Overview"
+import Gallery from "@/components/hotel/details/Gallery";
+import Overview from "@/components/hotel/details/Overview";
+import Summary from "@/components/hotel/details/Summary";
 import { getHotelById } from "@/db/queries";
 
-const HotelDetailsPage = async({params}) => {
+const HotelDetailsPage = async ({ params, searchParams }) => {
 
-  const {id} = await params;
+  const { id } = await params;
+  const { checkin, checkout } = await searchParams;
 
-  const hotel = await getHotelById(id);
-
-  // console.log(hotel)
+  const hotel = await getHotelById(id, checkin, checkout);
 
   return (
     <>
-        <Summary hotel={hotel} />
-        <Gallery gallery={hotel?.gallery} />
-        <Overview overview={hotel?.overview} />
+      <Summary hotel={hotel} />
+      <Gallery gallery={hotel?.gallery} />
+      <Overview overview={hotel?.overview} />
     </>
   )
 }
