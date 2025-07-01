@@ -86,3 +86,8 @@ export async function getUserByEmail(email) {
     const user = await userModel.findOne({ email: email });
     return user;
 }
+
+export async function getAllBookingsByUser(userId) {
+    const bookings = await bookingModel.find({ userId: userId });
+    return bookings;
+}
