@@ -43,10 +43,9 @@ const HotelSummaryInfo = ({ hotel, fromListPage, checkin, checkout }) => {
                     {hotel?.isBooked && (
                         <span className="bg-[#FF6A28] text-xs text-white px-2 py-1 rounded-md">
                             {" "}
-                            Booked
+                            Already Booked
                         </span>
                     )}
-                    {/* <span className="bg-[#FF6A28] text-xs text-white px-1 py-1 rounded-md"> Booked</span> */}
                 </h2>
                 <p>📍 {hotel?.city}</p>
                 <HotelReviewAndRating hotelId={hotel?._id} />
@@ -64,14 +63,17 @@ const HotelSummaryInfo = ({ hotel, fromListPage, checkin, checkout }) => {
                     >
                         Details
                     </Link>
+                ) : hotel?.isBooked ? (
+                    <span className="bg-gray-500 px-8 py-2 rounded-md block text-gray-200 font-bold shadow-lg cursor-not-allowed">
+                        Already Booked
+                    </span>
                 ) : (
-                    <button
-                        href={`/hotels/${hotel?._id}`}
-                        disabled={hotel?.isBooked}
-                        className="bg-[#FF6A28] px-8 py-2 rounded-md block text-white font-bold shadow-lg hover:shadow-primary/50 active:scale-95 transition-all disabled:bg-gray-500 disabled:text-gray-200 disabled:cursor-not-allowed"
+                    <Link
+                        href={`/hotels/${hotel?._id}/payment${params}`}
+                        className="bg-[#FF6A28] px-8 py-2 rounded-md block text-white font-bold shadow-lg hover:shadow-primary/50 active:scale-95 transition-all"
                     >
-                        {hotel?.isBooked ? "Already Booked" : "Book Now"}
-                    </button>
+                        Book Now
+                    </Link>
                 )}
             </div>
         </>

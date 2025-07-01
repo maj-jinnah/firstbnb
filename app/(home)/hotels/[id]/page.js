@@ -12,7 +12,10 @@ const HotelDetailsPage = async ({ params, searchParams }) => {
 
   return (
     <>
-      <Summary hotel={hotel} />
+      <Summary
+        hotel={hotel}
+        checkin={checkin}
+        checkout={checkout} />
       <Gallery gallery={hotel?.gallery} />
       <Overview overview={hotel?.overview} />
     </>

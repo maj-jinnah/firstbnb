@@ -2,6 +2,7 @@ import { bookingModel } from "@/models/booking-model";
 import { hotelModel } from "@/models/hotel-model";
 import { ratingModel } from "@/models/rating-model";
 import { reviewModel } from "@/models/review-model";
+import { userModel } from "@/models/user-model";
 import { isDateInBetween } from "@/utilis";
 
 export async function getAllHotels(destination, checkin, checkout) {
@@ -79,4 +80,9 @@ export async function getRatingsByHotelId(hotelId) {
 export async function getReviewsByHotelId(hotelId) {
     const review = await reviewModel.find({ hotelId: hotelId });
     return review;
+}
+
+export async function getUserByEmail(email) {
+    const user = await userModel.findOne({ email: email });
+    return user;
 }
