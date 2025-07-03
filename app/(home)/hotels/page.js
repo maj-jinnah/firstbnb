@@ -4,10 +4,19 @@ import Filter from "@/components/search/Filter";
 import Search from "@/components/search/Search";
 
 
-
 const HotelListPage = async ({ searchParams }) => {
 
-    const { destination, checkin, checkout } = await searchParams;
+    const { destination, checkin, checkout, category } = await searchParams;
+
+    const refinedCategory = (category) =>{
+        const decodedCategory = decodeURI(category);
+
+        if(decodedCategory === 'undefined') {
+            return '';
+        } else {
+            return decodedCategory;
+        }
+    }
 
     return (
         <>
@@ -26,7 +35,9 @@ const HotelListPage = async ({ searchParams }) => {
                     <HotelList
                         destination={destination}
                         checkin={checkin}
-                        checkout={checkout} />
+                        checkout={checkout}
+                        category={refinedCategory(category)} 
+                        />
                 </div>
             </section>
         </>

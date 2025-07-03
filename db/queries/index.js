@@ -5,7 +5,7 @@ import { reviewModel } from "@/models/review-model";
 import { userModel } from "@/models/user-model";
 import { isDateInBetween } from "@/utilis";
 
-export async function getAllHotels(destination, checkin, checkout) {
+export async function getAllHotels(destination, checkin, checkout, category) {
 
     const destinationRegex = new RegExp(destination, 'i')
 
@@ -14,21 +14,20 @@ export async function getAllHotels(destination, checkin, checkout) {
 
     let allHotels = hotelsByDestination;
 
-    if (checkin && checkout) {
+    if (category) {
+        const categoriesToMatch = category.split(',');
+        allHotels = allHotels.filter(hotel => categoriesToMatch.includes(hotel.propertyCategory.toString()));
+    }
 
+    if (checkin && checkout) {
         allHotels = await Promise.all(
             allHotels.map(async (hotel) => {
                 const found = await findBooking(hotel._id, checkin, checkout);
 
-                // console.log('found---', found)
-                // console.log("hotel---", hotel)
-
                 if (found) {
-                    hotel['isBooked'] = true
-                    // console.log('Inside if hotel---', hotel)
-                    // console.log(hotel?.isBooked)
+                    hotel['isBooked'] = true;
                 } else {
-                    hotel['isBooked'] = false
+                    hotel['isBooked'] = false;
                 }
 
                 return hotel;
