@@ -3,7 +3,7 @@ import HotelSummaryInfo from "./HotelSummaryInfo";
 
 const HotelCard = ({ hotel, checkin, checkout }) => {
     return (
-        <div className="flex gap-6 border border-gray/20 p-4 rounded-md">
+        <div className="flex gap-6 p-4 rounded-md border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
             <Image
                 src={hotel?.thumbNailUrl}
                 alt={hotel?.name}

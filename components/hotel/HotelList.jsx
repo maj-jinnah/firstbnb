@@ -2,19 +2,20 @@ import { getAllHotels } from "@/db/queries";
 import HotelCard from "./HotelCard";
 import NoHotels from "./NoHotels";
 
-const HotelList = async ({ destination, checkin, checkout, category, priceRange }) => {
+const HotelList = async ({ destination, checkin, checkout, category, priceRange, rate }) => {
     const allHotels = await getAllHotels(
         destination,
         checkin,
         checkout,
         category,
-        priceRange
+        priceRange,
+        rate,
     );
 
     return (
         <div className="col-span-9">
             {allHotels.length > 0 && (
-                <p className="my-5 font-bold">
+                <p className="mb-5 font-bold text-center">
                     Number of hotels: {allHotels.length}
                 </p>
             )}

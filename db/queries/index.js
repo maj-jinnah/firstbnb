@@ -5,7 +5,7 @@ import { reviewModel } from "@/models/review-model";
 import { userModel } from "@/models/user-model";
 import { isDateInBetween } from "@/utilis";
 
-export async function getAllHotels(destination, checkin, checkout, category, priceRange) {
+export async function getAllHotels(destination, checkin, checkout, category, priceRange, rate) {
 
     const destinationRegex = new RegExp(destination, 'i')
 
@@ -17,6 +17,18 @@ export async function getAllHotels(destination, checkin, checkout, category, pri
     if (category) {
         const categoriesToMatch = category.split(',');
         allHotels = allHotels.filter(hotel => categoriesToMatch.includes(hotel.propertyCategory.toString()));
+    }
+
+    if(rate){
+        allHotels = allHotels.sort((a, b) => {
+            if (rate === "highToLow") {
+                return b.lowRate - a.lowRate;
+            } else if (rate === "lowToHigh") {
+                return a.lowRate - b.lowRate;
+            } else {
+                return 0; // No sorting applied
+            }
+        });
     }
 
     const priceRanges =
