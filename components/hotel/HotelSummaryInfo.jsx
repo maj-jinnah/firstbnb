@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BookNowButton from "./BookNowButton";
 import HotelReviewAndRating from "./HotelReviewAndRating";
 
 const HotelSummaryInfo = ({ hotel, fromListPage, checkin, checkout }) => {
@@ -41,12 +42,18 @@ const HotelSummaryInfo = ({ hotel, fromListPage, checkin, checkout }) => {
                         )
                     )}
                     {hotel?.isBooked && (
-                        <span className="bg-[#FF6A28] text-xs text-white px-2 py-1 rounded-md">
+                        <span className="bg-red-500 text-xs text-white px-2 py-1 ml-5 rounded-md">
                             {" "}
                             Already Booked
                         </span>
                     )}
                 </h2>
+                {/* {hotel?.isBooked && (
+                    <span className="bg-red-500 text-xs text-white font-bold px-2 py-1 rounded-md">
+                        {" "}
+                        Already Booked
+                    </span>
+                )} */}
                 <p>📍 {hotel?.city}</p>
                 <HotelReviewAndRating hotelId={hotel?._id} />
             </div>
@@ -55,7 +62,7 @@ const HotelSummaryInfo = ({ hotel, fromListPage, checkin, checkout }) => {
                 <h2 className="text-2xl font-bold text-right underline decoration-1">
                     ৳{hotel?.lowRate}
                 </h2>
-                <p className=" text-right">Per Night for 1 Rooms</p>
+                <p className=" text-right">Per Night for 1 apartment</p>
                 {fromListPage ? (
                     <Link
                         href={`/hotels/${hotel?._id}${params}`}
@@ -68,12 +75,19 @@ const HotelSummaryInfo = ({ hotel, fromListPage, checkin, checkout }) => {
                         Already Booked
                     </span>
                 ) : (
-                    <Link
-                        href={`/hotels/${hotel?._id}/payment${params}`}
-                        className="bg-[#FF6A28] px-8 py-2 rounded-md block text-white font-bold shadow-lg hover:shadow-primary/50 active:scale-95 transition-all"
-                    >
-                        Book Now
-                    </Link>
+                    // <Link
+                    //     href={`/hotels/${hotel?._id}/payment${params}`}
+                    //     className="bg-[#FF6A28] px-8 py-2 rounded-md block text-white font-bold shadow-lg hover:shadow-primary/50 active:scale-95 transition-all"
+                    // >
+                    //     Book Now
+                    // </Link>
+
+                    <BookNowButton
+                        hotelId={hotel._id.toString()}
+                        checkin={checkin}
+                        checkout={checkout}
+                        params={params}
+                    />
                 )}
             </div>
         </>

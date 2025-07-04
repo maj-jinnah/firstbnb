@@ -39,28 +39,7 @@ const SortByStar = () => {
         }
 
         replace(`${pathName}?${params.toString()}`, { scroll: false });
-        
     }, [query]);
-
-    // useEffect(() => {
-    //     const params = new URLSearchParams(searchParams);
-
-    //     if (query.length > 0) {
-    //         params.set("category", encodeURI(query.join(",")));
-    //     } else {
-    //         params.delete("category");
-    //     }
-
-    //     setLoading(true);
-
-    //     replace(`${pathName}?${params.toString()}`, { scroll: false });
-
-    //     // Since replace() is synchronous, add a timeout to simulate loading
-    //     const timer = setTimeout(() => setLoading(false), 500);
-
-    //     // Cleanup to avoid memory leaks if component unmounts
-    //     return () => clearTimeout(timer);
-    // }, [query, searchParams, pathName, replace]);
 
     return (
         <div>
@@ -83,14 +62,6 @@ const SortByStar = () => {
                     </label>
                 ))}
             </form>
-            {/* {loading && (
-                <div className="flex items-center justify-center mt-4">
-                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="ml-2 text-blue-600 font-medium">
-                        Loading...
-                    </span>
-                </div>
-            )} */}
         </div>
     );
 };

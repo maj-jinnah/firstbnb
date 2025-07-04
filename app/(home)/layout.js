@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Firstbnb",
+  title: "Firstbnb | Vacation rentals, cabins, beach houses, & more",
   description: "Vacation rentals, cabins, beach houses, & more",
 };
 
@@ -29,7 +29,7 @@ export default async function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navbar login={true} />
-        <ToastContainer />
+        <ToastContainer position="top-center" theme="dark" />
         <main>
           {children}
         </main>

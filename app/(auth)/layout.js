@@ -30,7 +30,7 @@ export default async function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navbar login={false} />
-        <ToastContainer />
+        <ToastContainer position="top-center" theme="dark" />
         <main>
           {children}
         </main>

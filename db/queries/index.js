@@ -5,7 +5,7 @@ import { reviewModel } from "@/models/review-model";
 import { userModel } from "@/models/user-model";
 import { isDateInBetween } from "@/utilis";
 
-export async function getAllHotels(destination, checkin, checkout, category) {
+export async function getAllHotels(destination, checkin, checkout, category, priceRange) {
 
     const destinationRegex = new RegExp(destination, 'i')
 
@@ -17,6 +17,33 @@ export async function getAllHotels(destination, checkin, checkout, category) {
     if (category) {
         const categoriesToMatch = category.split(',');
         allHotels = allHotels.filter(hotel => categoriesToMatch.includes(hotel.propertyCategory.toString()));
+    }
+
+    const priceRanges =
+        typeof priceRange === "string" ? priceRange.split(",") : priceRange;
+
+    if (priceRanges && priceRanges.length > 0) {
+        allHotels = allHotels.filter((hotel) => {
+            const rate = hotel.lowRate;
+            return priceRanges.some((range) => {
+                switch (range) {
+                    case "range1":
+                        return rate >= 500 && rate <= 1000;
+                    case "range2":
+                        return rate > 1000 && rate <= 2000;
+                    case "range3":
+                        return rate > 2000 && rate <= 3000;
+                    case "range4":
+                        return rate > 3000 && rate <= 4000;
+                    case "range5":
+                        return rate > 4000 && rate <= 5000;
+                    case "range6":
+                        return rate > 5000;
+                    default:
+                        return false;
+                }
+            });
+        });
     }
 
     if (checkin && checkout) {

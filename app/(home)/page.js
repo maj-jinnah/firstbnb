@@ -9,7 +9,7 @@ export default function Home() {
                         Hotel for memorable moments rich in emotions
                     </h1>
                     <p className="my-2 text-[#5f5e5e] text-center">
-                        We have 459 rooms spread through out Indonesia with room
+                        We have 28 rooms spread through out Indonesia with room
                         standards equivalent to 5 star hotels.
                     </p>
                     <Search />

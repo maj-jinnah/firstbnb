@@ -11,11 +11,11 @@ const Navbar = async ({ login }) => {
         <nav className="max-w-7xl flex mx-auto justify-between px-4 py-4 absolute top-0 w-full left-0 right-0 z-50">
             <Link href="/">
                 <Image
-                    src="/stayswift.svg"
+                    src="/firstbnb.png"
                     alt="Stay Swift Logo"
                     width={200}
                     height={200}
-                    className="h-[35px] md:h-[40px] lg:h-[50px]"
+                    className="h-[35px] md:h-[40px] lg:h-[85px] object-cover"
                 />
             </Link>
 
@@ -23,10 +23,6 @@ const Navbar = async ({ login }) => {
                 <ul className="hidden md:flex items-center gap-6">
                     <li>
                         <Link href="/hotels">Hotels</Link>
-                    </li>
-
-                    <li>
-                        <Link href="#">About Us</Link>
                     </li>
 
                     <li>
@@ -40,7 +36,7 @@ const Navbar = async ({ login }) => {
                     <li className="mr-10">
                         {session?.user ? (
                             <div>
-                                <span className="font-bold text-[#FF6A28]">{session?.user?.name}</span>
+                                <span className="font-bold text-[#023C52]">{session?.user?.name}</span>
                                 <span> | </span>
                                 <Logout />
                             </div>
@@ -60,3 +56,5 @@ const Navbar = async ({ login }) => {
 };
 
 export default Navbar;
+
+// #023C52

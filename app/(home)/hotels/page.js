@@ -6,12 +6,12 @@ import Search from "@/components/search/Search";
 
 const HotelListPage = async ({ searchParams }) => {
 
-    const { destination, checkin, checkout, category } = await searchParams;
+    const { destination, checkin, checkout, category, priceRange } = await searchParams;
 
-    const refinedCategory = (category) =>{
+    const refinedCategory = (category) => {
         const decodedCategory = decodeURI(category);
 
-        if(decodedCategory === 'undefined') {
+        if (decodedCategory === 'undefined') {
             return '';
         } else {
             return decodedCategory;
@@ -36,8 +36,9 @@ const HotelListPage = async ({ searchParams }) => {
                         destination={destination}
                         checkin={checkin}
                         checkout={checkout}
-                        category={refinedCategory(category)} 
-                        />
+                        category={refinedCategory(category)}
+                        priceRange={priceRange}
+                    />
                 </div>
             </section>
         </>
