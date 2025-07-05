@@ -4,6 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const Search = ({ fromList, destination, checkin, checkout }) => {
+    
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();

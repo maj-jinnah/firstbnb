@@ -1,4 +1,5 @@
 import Search from "@/components/search/Search";
+import { Suspense } from "react";
 
 export default function Home() {
     return (
@@ -12,7 +13,9 @@ export default function Home() {
                         We have 28 rooms spread through out Indonesia with room
                         standards equivalent to 5 star hotels.
                     </p>
-                    <Search />
+                    <Suspense>
+                        <Search />
+                    </Suspense>
                 </div>
             </div>
         </section>
