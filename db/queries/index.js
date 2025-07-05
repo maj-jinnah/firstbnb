@@ -19,6 +19,18 @@ export async function getAllHotels(destination, checkin, checkout, category, pri
 
     let allHotels = hotelsByDestination;
 
+    console.log('destination --- ', destination)
+    console.log('allhotels --- ', allHotels)
+
+    if (destination === 'all') {
+        allHotels = await hotelModel
+            .find({})
+            .populate({
+                path: "amenities",
+                model: amenityModel,
+            });
+    }
+
     if (category) {
         const categoriesToMatch = category.split(',');
         allHotels = allHotels.filter(hotel => categoriesToMatch.includes(hotel.propertyCategory.toString()));
