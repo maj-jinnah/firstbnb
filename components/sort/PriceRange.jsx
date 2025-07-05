@@ -121,12 +121,12 @@ const PriceRange = () => {
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-300">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-3">
                 <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></div>
                 <h3 className="font-bold text-xl text-gray-800">Price Range</h3>
             </div>
 
-            <form className="space-y-3">
+            <form className="space-y-2">
                 {[
                     "range1",
                     "range2",
@@ -138,7 +138,7 @@ const PriceRange = () => {
                     <label
                         key={range}
                         htmlFor={range}
-                        className="group flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer border border-transparent hover:border-gray-200"
+                        className="group flex items-center gap-4 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer border border-gray-200 hover:border-[#3b82f6]"
                     >
                         <div className="relative">
                             <input
@@ -200,7 +200,7 @@ const PriceRange = () => {
                     </label>
                 ))}
             </form>
-
+{/* 
             {query.length > 0 && (
                 <div className="mt-6 pt-4 border-t border-gray-100">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -211,7 +211,7 @@ const PriceRange = () => {
                         </span>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

@@ -34,7 +34,7 @@ const RegistrationForm = () => {
                 );
                 router.push("/login");
             } else {
-                console.log(responseData);
+                // console.log(responseData);
                 toast.error(responseData.message);
                 // setError(responseData.message || "Something went wrong.");
             }

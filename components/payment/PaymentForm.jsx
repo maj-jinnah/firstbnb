@@ -34,7 +34,7 @@ const PaymentForm = ({ user, hotelId, checkin, checkout, cost }) => {
                 );
                 router.push("/bookings");
             } else {
-                console.log(data);
+                // console.log(data);
                 toast.error(data.message);
                 setError(data.message || "Something went wrong.");
             }
@@ -107,7 +107,7 @@ const PaymentForm = ({ user, hotelId, checkin, checkout, cost }) => {
                 <input
                     type="text"
                     id="card"
-                    placeholder="Enter any card number. Ex: xxxx-xxxx-xxxx-xxxx"
+                    placeholder="xxxx-xxxx-xxxx-xxxx"
                     className="w-full border border-[#CCCCCC]/60 py-1 px-2 rounded-md"
                 />
             </div>
@@ -119,7 +119,7 @@ const PaymentForm = ({ user, hotelId, checkin, checkout, cost }) => {
                 <input
                     type="text"
                     id="expiry"
-                    placeholder="Enter expiry date. Ex: MM/YY"
+                    placeholder="MM/YY"
                     className="w-full border border-[#CCCCCC]/60 py-1 px-2 rounded-md"
                 />
             </div>
@@ -131,7 +131,7 @@ const PaymentForm = ({ user, hotelId, checkin, checkout, cost }) => {
                 <input
                     type="text"
                     id="cvv"
-                    placeholder="Enter CVV number Ex: 123"
+                    placeholder="123"
                     className="w-full border border-[#CCCCCC]/60 py-1 px-2 rounded-md"
                 />
             </div>

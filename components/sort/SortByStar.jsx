@@ -80,7 +80,7 @@ const SortByStar = () => {
     const searchParams = useSearchParams();
     const pathName = usePathname();
     const { replace } = useRouter();
-    
+
     const params = new URLSearchParams(searchParams);
 
     const handleChange = (e) => {
@@ -115,17 +115,19 @@ const SortByStar = () => {
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 max-w-sm">
-            <div className="flex items-center gap-2 mb-6">
-                <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full"></div>
+            <div className="flex items-center gap-2 mb-3">
+                <span className="text-2xl text-yellow-400 transition-colors duration-200">
+                    ★
+                </span>
                 <h3 className="font-bold text-xl text-gray-800">Star Rating</h3>
             </div>
 
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-3">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-2">
                 {[5, 4, 3, 2, 1].map((star) => (
                     <label
                         htmlFor={`${star}Star`}
                         key={star}
-                        className="group flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-yellow-300 hover:bg-yellow-50 transition-all duration-200 cursor-pointer"
+                        className="group flex items-center gap-3 px-3 py-2 rounded-lg border border-gray-200 hover:border-yellow-300 hover:bg-yellow-50 transition-all duration-200 cursor-pointer"
                     >
                         <div className="relative">
                             <input
@@ -138,14 +140,16 @@ const SortByStar = () => {
                             />
                             <div className="w-5 h-5 border-2 border-gray-300 rounded-md peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-orange-500 peer-checked:border-yellow-400 transition-all duration-200 flex items-center justify-center">
                                 <svg
-                                    className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
+                                    className="w-3 h-3 text-white"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
                                 >
                                     <path
-                                        fillRule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clipRule="evenodd"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={3}
+                                        d="M5 13l4 4L19 7"
                                     />
                                 </svg>
                             </div>
@@ -167,7 +171,7 @@ const SortByStar = () => {
                 ))}
             </form>
 
-            {query.length > 0 && (
+            {/* {query.length > 0 && (
                 <div className="mt-6 pt-4 border-t border-gray-200">
                     <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">
@@ -182,7 +186,7 @@ const SortByStar = () => {
                         </button>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

@@ -6,7 +6,7 @@ import Search from "@/components/search/Search";
 
 const HotelListPage = async ({ searchParams }) => {
 
-    const { destination, checkin, checkout, category, priceRange, rate } = await searchParams;
+    const { destination, checkin, checkout, category, priceRange, rate, amenities } = await searchParams;
 
     const refinedCategory = (category) => {
         const decodedCategory = decodeURI(category);
@@ -39,6 +39,7 @@ const HotelListPage = async ({ searchParams }) => {
                         category={refinedCategory(category)}
                         priceRange={priceRange}
                         rate={rate}
+                        amenities={amenities}
                     />
                 </div>
             </section>

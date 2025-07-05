@@ -1,3 +1,4 @@
+import { amenityModel } from "@/models/amenity-model";
 import { bookingModel } from "@/models/booking-model";
 import { hotelModel } from "@/models/hotel-model";
 import { ratingModel } from "@/models/rating-model";
@@ -5,12 +6,16 @@ import { reviewModel } from "@/models/review-model";
 import { userModel } from "@/models/user-model";
 import { isDateInBetween } from "@/utilis";
 
-export async function getAllHotels(destination, checkin, checkout, category, priceRange, rate) {
+export async function getAllHotels(destination, checkin, checkout, category, priceRange, rate, amenities) {
 
     const destinationRegex = new RegExp(destination, 'i')
 
     const hotelsByDestination = await hotelModel
-        .find({ city: { $regex: destinationRegex } });
+        .find({ city: { $regex: destinationRegex } })
+        .populate({
+            path: "amenities",
+            model: amenityModel,
+        });
 
     let allHotels = hotelsByDestination;
 
@@ -19,7 +24,7 @@ export async function getAllHotels(destination, checkin, checkout, category, pri
         allHotels = allHotels.filter(hotel => categoriesToMatch.includes(hotel.propertyCategory.toString()));
     }
 
-    if(rate){
+    if (rate) {
         allHotels = allHotels.sort((a, b) => {
             if (rate === "highToLow") {
                 return b.lowRate - a.lowRate;
@@ -55,6 +60,26 @@ export async function getAllHotels(destination, checkin, checkout, category, pri
                         return false;
                 }
             });
+        });
+    }
+
+    const allAmenities = allHotels.flatMap((hotel) => {
+        return hotel.amenities.map((amenity) =>
+            amenity.name.toLowerCase().replace(/\s+/g, "-")
+        );
+    });
+
+    if (amenities) {
+        const amenitiesToMatch = amenities.split(",");
+
+        allHotels = allHotels.filter((hotel) => {
+            const hotelAmenities = hotel.amenities.map((amenity) =>
+                amenity.name.toLowerCase().replace(/\s+/g, "-")
+            );
+
+            return amenitiesToMatch.every((amenity) =>
+                hotelAmenities.includes(amenity)
+            );
         });
     }
 

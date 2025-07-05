@@ -62,7 +62,7 @@ const SortByPrice = () => {
         } else {
             params.delete("rate");
         }
-        replace(`${pathName}?${params.toString()}`);
+        replace(`${pathName}?${params.toString()}`, { scroll: false });
     }, [selectedSort]);
 
     return (
@@ -122,7 +122,7 @@ const SortByPrice = () => {
                 </label>
             </div>
 
-            {selectedSort && (
+            {/* {selectedSort && (
                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                     <p className="text-sm text-gray-600">
                         Sorting by:{" "}
@@ -133,7 +133,7 @@ const SortByPrice = () => {
                         </span>
                     </p>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };
