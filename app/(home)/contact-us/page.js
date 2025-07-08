@@ -48,11 +48,11 @@ const ContactUsPage = () => {
             }
         } catch (error) {
             console.error("Error sending email:", error);
-            toast({
-                title: "Error sending message",
-                description: "Please try again later or contact me directly.",
-                variant: "destructive",
-            });
+            toast(<div>
+                <p className="font-semibold text-white mb-2">Error sending message</p>
+                <p className="text-sm text-gray-300">Please try again later or contact me directly.</p>
+            </div>);
+
         } finally {
             setIsSubmitting(false);
         }
