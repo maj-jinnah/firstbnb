@@ -32,10 +32,10 @@ const ContactUsPage = () => {
         try {
             if (formRef.current) {
                 await emailjs.sendForm(
-                    process.env.NEXT_PUBLIC_SERVICE_ID,
-                    process.env.NEXT_PUBLIC_TEMPLATE_ID,
+                    process.env.SERVICE_ID,
+                    process.env.TEMPLATE_ID,
                     formRef.current,
-                    process.env.NEXT_PUBLIC_PUBLIC_KEY,
+                    process.env.EMAILJS_PUBLIC_KEY,
                 );
                 toast(<div>
                     <p className="font-semibold text-white mb-2">Message sent successfully!</p>
