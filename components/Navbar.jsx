@@ -26,7 +26,7 @@ const Navbar = async ({ login }) => {
                     </li>
 
                     <li>
-                        <Link href="#">Contact us</Link>
+                        <Link href="/contact-us">Contact us</Link>
                     </li>
 
                     <li>

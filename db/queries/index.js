@@ -19,8 +19,8 @@ export async function getAllHotels(destination, checkin, checkout, category, pri
 
     let allHotels = hotelsByDestination;
 
-    console.log('destination --- ', destination)
-    console.log('allhotels --- ', allHotels)
+    // console.log('destination --- ', destination)
+    // console.log('allhotels --- ', allHotels)
 
     if (destination === 'all') {
         allHotels = await hotelModel
