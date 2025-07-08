@@ -28,15 +28,15 @@ const ContactUsPage = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-
         try {
             if (formRef.current) {
                 await emailjs.sendForm(
-                    process.env.SERVICE_ID,
-                    process.env.TEMPLATE_ID,
+                    process.env.NEXT_PUBLIC_SERVICE_ID,
+                    process.env.NEXT_PUBLIC_TEMPLATE_ID,
                     formRef.current,
-                    process.env.EMAILJS_PUBLIC_KEY,
+                    process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
                 );
+
                 toast(<div>
                     <p className="font-semibold text-white mb-2">Message sent successfully!</p>
                     <p className="text-sm text-gray-300">Thanks for reaching out. I&apos;ll get back to you soon.</p>
