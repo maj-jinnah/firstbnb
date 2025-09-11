@@ -300,7 +300,3 @@ export async function loginUsingCredentials(formData) {
     return { success: false, error: "Something went wrong. Please try again later." };
   }
 }
-
-
-
-

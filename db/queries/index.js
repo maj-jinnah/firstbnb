@@ -5,164 +5,202 @@ import { ratingModel } from "@/models/rating-model";
 import { reviewModel } from "@/models/review-model";
 import { userModel } from "@/models/user-model";
 import { isDateInBetween } from "@/utilis";
+import { dbConnect } from "../dbConnection";
 
 export async function getAllHotels(destination, checkin, checkout, category, priceRange, rate, amenities) {
+    try {
+        await dbConnect();
 
-    const destinationRegex = new RegExp(destination, 'i')
+        const destinationRegex = new RegExp(destination, 'i')
 
-    const hotelsByDestination = await hotelModel
-        .find({ city: { $regex: destinationRegex } })
-        .populate({
-            path: "amenities",
-            model: amenityModel,
-        });
-
-    let allHotels = hotelsByDestination;
-
-    // console.log('destination --- ', destination)
-    // console.log('allhotels --- ', allHotels)
-
-    if (destination === 'all') {
-        allHotels = await hotelModel
-            .find({})
+        const hotelsByDestination = await hotelModel
+            .find({ city: { $regex: destinationRegex } })
             .populate({
                 path: "amenities",
                 model: amenityModel,
             });
-    }
 
-    if (category) {
-        const categoriesToMatch = category.split(',');
-        allHotels = allHotels.filter(hotel => categoriesToMatch.includes(hotel.propertyCategory.toString()));
-    }
+        let allHotels = hotelsByDestination;
 
-    if (rate) {
-        allHotels = allHotels.sort((a, b) => {
-            if (rate === "highToLow") {
-                return b.lowRate - a.lowRate;
-            } else if (rate === "lowToHigh") {
-                return a.lowRate - b.lowRate;
-            } else {
-                return 0; // No sorting applied
-            }
-        });
-    }
+        // console.log('destination --- ', destination)
+        // console.log('allhotels --- ', allHotels)
 
-    const priceRanges =
-        typeof priceRange === "string" ? priceRange.split(",") : priceRange;
+        if (destination === 'all') {
+            allHotels = await hotelModel
+                .find({})
+                .populate({
+                    path: "amenities",
+                    model: amenityModel,
+                });
+        }
 
-    if (priceRanges && priceRanges.length > 0) {
-        allHotels = allHotels.filter((hotel) => {
-            const rate = hotel.lowRate;
-            return priceRanges.some((range) => {
-                switch (range) {
-                    case "range1":
-                        return rate >= 500 && rate <= 1000;
-                    case "range2":
-                        return rate > 1000 && rate <= 2000;
-                    case "range3":
-                        return rate > 2000 && rate <= 3000;
-                    case "range4":
-                        return rate > 3000 && rate <= 4000;
-                    case "range5":
-                        return rate > 4000 && rate <= 5000;
-                    case "range6":
-                        return rate > 5000;
-                    default:
-                        return false;
+        if (category) {
+            const categoriesToMatch = category.split(',');
+            allHotels = allHotels.filter(hotel => categoriesToMatch.includes(hotel.propertyCategory.toString()));
+        }
+
+        if (rate) {
+            allHotels = allHotels.sort((a, b) => {
+                if (rate === "highToLow") {
+                    return b.lowRate - a.lowRate;
+                } else if (rate === "lowToHigh") {
+                    return a.lowRate - b.lowRate;
+                } else {
+                    return 0; // No sorting applied
                 }
             });
-        });
-    }
+        }
 
-    const allAmenities = allHotels.flatMap((hotel) => {
-        return hotel.amenities.map((amenity) =>
-            amenity.name.toLowerCase().replace(/\s+/g, "-")
-        );
-    });
+        const priceRanges =
+            typeof priceRange === "string" ? priceRange.split(",") : priceRange;
 
-    if (amenities) {
-        const amenitiesToMatch = amenities.split(",");
+        if (priceRanges && priceRanges.length > 0) {
+            allHotels = allHotels.filter((hotel) => {
+                const rate = hotel.lowRate;
+                return priceRanges.some((range) => {
+                    switch (range) {
+                        case "range1":
+                            return rate >= 500 && rate <= 1000;
+                        case "range2":
+                            return rate > 1000 && rate <= 2000;
+                        case "range3":
+                            return rate > 2000 && rate <= 3000;
+                        case "range4":
+                            return rate > 3000 && rate <= 4000;
+                        case "range5":
+                            return rate > 4000 && rate <= 5000;
+                        case "range6":
+                            return rate > 5000;
+                        default:
+                            return false;
+                    }
+                });
+            });
+        }
 
-        allHotels = allHotels.filter((hotel) => {
-            const hotelAmenities = hotel.amenities.map((amenity) =>
+        const allAmenities = allHotels.flatMap((hotel) => {
+            return hotel.amenities.map((amenity) =>
                 amenity.name.toLowerCase().replace(/\s+/g, "-")
             );
-
-            return amenitiesToMatch.every((amenity) =>
-                hotelAmenities.includes(amenity)
-            );
         });
+
+        if (amenities) {
+            const amenitiesToMatch = amenities.split(",");
+
+            allHotels = allHotels.filter((hotel) => {
+                const hotelAmenities = hotel.amenities.map((amenity) =>
+                    amenity.name.toLowerCase().replace(/\s+/g, "-")
+                );
+
+                return amenitiesToMatch.every((amenity) =>
+                    hotelAmenities.includes(amenity)
+                );
+            });
+        }
+
+        if (checkin && checkout) {
+            allHotels = await Promise.all(
+                allHotels.map(async (hotel) => {
+                    const found = await findBooking(hotel._id, checkin, checkout);
+
+                    if (found) {
+                        hotel['isBooked'] = true;
+                    } else {
+                        hotel['isBooked'] = false;
+                    }
+
+                    return hotel;
+                })
+            )
+        }
+
+        return allHotels;
+
+    } catch (error) {
+        console.log('Error in getAllHotels query', error)
     }
-
-    if (checkin && checkout) {
-        allHotels = await Promise.all(
-            allHotels.map(async (hotel) => {
-                const found = await findBooking(hotel._id, checkin, checkout);
-
-                if (found) {
-                    hotel['isBooked'] = true;
-                } else {
-                    hotel['isBooked'] = false;
-                }
-
-                return hotel;
-            })
-        )
-    }
-
-    return allHotels;
 }
 
 const findBooking = async (hotelId, checkin, checkout) => {
-    const booking = await bookingModel.find({
-        hotelId: hotelId.toString(),
-    });
+    try {
+        await dbConnect();
+        const booking = await bookingModel.find({
+            hotelId: hotelId.toString(),
+        });
 
-    const found = booking.find((match) => {
-        return (
-            isDateInBetween(checkin, match.checkin, match.checkout) ||
-            isDateInBetween(checkout, match.checkin, match.checkout)
-        );
-    });
+        const found = booking.find((match) => {
+            return (
+                isDateInBetween(checkin, match.checkin, match.checkout) ||
+                isDateInBetween(checkout, match.checkin, match.checkout)
+            );
+        });
 
-    // console.log('found---', found)
-
-    return found;
+        return found;
+    } catch (error) {
+        console.log('Error in findBooking query', error)
+    }
 };
 
 export async function getHotelById(hotelId, checkin, checkout) {
-    const hotel = await hotelModel.findById(hotelId);
+    try {
+        await dbConnect();
 
-    if (checkin && checkout) {
+        const hotel = await hotelModel.findById(hotelId);
 
-        const found = await findBooking(hotel._id, checkin, checkout);
-        if (found) {
-            hotel['isBooked'] = true
-        } else {
-            hotel['isBooked'] = false
+        if (checkin && checkout) {
+
+            const found = await findBooking(hotel._id, checkin, checkout);
+            if (found) {
+                hotel['isBooked'] = true
+            } else {
+                hotel['isBooked'] = false
+            }
         }
-    }
 
-    return hotel;
+        return hotel;
+    } catch (error) {
+        console.log('Error in getHotelById query', error)
+    }
 }
 
 export async function getRatingsByHotelId(hotelId) {
-    const rating = await ratingModel.find({ hotelId: hotelId });
-    return rating;
+    try {
+        await dbConnect();
+
+        const rating = await ratingModel.find({ hotelId: hotelId });
+        return rating;
+    } catch (error) {
+        console.log('Error in getRatingsByHotelId query', error)
+    }
 }
 
 export async function getReviewsByHotelId(hotelId) {
-    const review = await reviewModel.find({ hotelId: hotelId });
-    return review;
+    try {
+        await dbConnect();
+
+        const review = await reviewModel.find({ hotelId: hotelId });
+        return review;
+    } catch (error) {
+        console.log('Error in getReviewsByHotelId query', error)
+    }
 }
 
 export async function getUserByEmail(email) {
-    const user = await userModel.findOne({ email: email });
-    return user;
+    try {
+        await dbConnect();
+        const user = await userModel.findOne({ email: email });
+        return user;
+    } catch (error) {
+        console.log('Error in getUserByEmail query', error)
+    }
 }
 
 export async function getAllBookingsByUser(userId) {
-    const bookings = await bookingModel.find({ userId: userId });
-    return bookings;
+    try {
+        await dbConnect();
+        const bookings = await bookingModel.find({ userId: userId });
+        return bookings;
+    } catch (error) {
+        console.log('Error in getAllBookingsByUser query', error)
+    }
 }
