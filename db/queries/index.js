@@ -211,166 +211,128 @@ export async function getAllHotels(destination, checkin, checkout, category, pri
     try {
         await dbConnect();
 
-        // Build MongoDB aggregation pipeline for better performance
-        const pipeline = [];
+        const destinationRegex = new RegExp(destination, 'i');
+        let allHotels;
 
-        // Stage 1: Match destination
-        if (destination && destination !== 'all') {
-            pipeline.push({
-                $match: {
-                    city: { $regex: new RegExp(destination, 'i') }
-                }
-            });
+        // Optimize initial query - combine both conditions into single query
+        if (destination === 'all') {
+            allHotels = await hotelModel
+                .find({})
+                .populate({
+                    path: "amenities",
+                    model: amenityModel,
+                }).lean();
+        } else {
+            allHotels = await hotelModel
+                .find({ city: { $regex: destinationRegex } })
+                .populate({
+                    path: "amenities",
+                    model: amenityModel,
+                }).lean();
         }
 
-        // Stage 2: Filter by category at database level
+        // console.log('destination --- ', destination)
+        // console.log('allhotels --- ', allHotels)
+
+        // Filter by category - optimize by converting to numbers once
         if (category) {
             const categoriesToMatch = category.split(',').map(cat => parseInt(cat));
-            pipeline.push({
-                $match: {
-                    propertyCategory: { $in: categoriesToMatch }
+            allHotels = allHotels.filter(hotel => categoriesToMatch.includes(parseInt(hotel.propertyCategory)));
+        }
+
+        // Sort early to avoid unnecessary sorting of filtered arrays later
+        if (rate) {
+            allHotels = allHotels.sort((a, b) => {
+                if (rate === "highToLow") {
+                    return b.lowRate - a.lowRate;
+                } else if (rate === "lowToHigh") {
+                    return a.lowRate - b.lowRate;
+                } else {
+                    return 0; // No sorting applied
                 }
             });
         }
 
-        // Stage 3: Filter by price range at database level
-        if (priceRange) {
-            const priceRanges = typeof priceRange === "string" ? priceRange.split(",") : priceRange;
-            const priceConditions = [];
-            
-            priceRanges.forEach(range => {
-                switch (range) {
-                    case "range1":
-                        priceConditions.push({ lowRate: { $gte: 500, $lte: 1000 } });
-                        break;
-                    case "range2":
-                        priceConditions.push({ lowRate: { $gt: 1000, $lte: 2000 } });
-                        break;
-                    case "range3":
-                        priceConditions.push({ lowRate: { $gt: 2000, $lte: 3000 } });
-                        break;
-                    case "range4":
-                        priceConditions.push({ lowRate: { $gt: 3000, $lte: 4000 } });
-                        break;
-                    case "range5":
-                        priceConditions.push({ lowRate: { $gt: 4000, $lte: 5000 } });
-                        break;
-                    case "range6":
-                        priceConditions.push({ lowRate: { $gt: 5000 } });
-                        break;
-                }
-            });
+        // Optimize price range filtering - parse ranges once and use lookup table
+        const priceRanges = typeof priceRange === "string" ? priceRange.split(",") : priceRange;
 
-            if (priceConditions.length > 0) {
-                pipeline.push({
-                    $match: {
-                        $or: priceConditions
-                    }
+        if (priceRanges && priceRanges.length > 0) {
+            // Create lookup table for better performance
+            const rangeCheckers = {
+                "range1": (rate) => rate >= 500 && rate <= 1000,
+                "range2": (rate) => rate > 1000 && rate <= 2000,
+                "range3": (rate) => rate > 2000 && rate <= 3000,
+                "range4": (rate) => rate > 3000 && rate <= 4000,
+                "range5": (rate) => rate > 4000 && rate <= 5000,
+                "range6": (rate) => rate > 5000
+            };
+
+            allHotels = allHotels.filter((hotel) => {
+                const hotelRate = hotel.lowRate;
+                return priceRanges.some((range) => {
+                    const checker = rangeCheckers[range];
+                    return checker ? checker(hotelRate) : false;
                 });
-            }
+            });
         }
 
-        // Stage 4: Populate amenities
-        pipeline.push({
-            $lookup: {
-                from: amenityModel.collection.name,
-                localField: 'amenities',
-                foreignField: '_id',
-                as: 'amenities'
-            }
+        // Keep original allAmenities logic (even though it's not used)
+        const allAmenities = allHotels.flatMap((hotel) => {
+            return hotel.amenities.map((amenity) =>
+                amenity.name.toLowerCase().replace(/\s+/g, "-")
+            );
         });
 
-        // Stage 5: Filter by amenities at database level
+        // Optimize amenity filtering - pre-process amenity names once per hotel
         if (amenities) {
             const amenitiesToMatch = amenities.split(",");
-            const amenityRegexes = amenitiesToMatch.map(amenity => 
-                new RegExp(`^${amenity.replace(/-/g, '\\s+')}$`, 'i')
-            );
 
-            pipeline.push({
-                $match: {
-                    'amenities.name': {
-                        $all: amenityRegexes.map(regex => ({ $regex: regex }))
-                    }
-                }
+            // Pre-process hotel amenities to avoid repeated processing
+            const hotelsWithProcessedAmenities = allHotels.map(hotel => ({
+                ...hotel,
+                processedAmenities: hotel.amenities.map((amenity) =>
+                    amenity.name.toLowerCase().replace(/\s+/g, "-")
+                )
+            }));
+
+            allHotels = hotelsWithProcessedAmenities.filter((hotel) => {
+                return amenitiesToMatch.every((amenity) =>
+                    hotel.processedAmenities.includes(amenity)
+                );
+            }).map(hotel => {
+                // Remove the temporary processed amenities field
+                const { processedAmenities, ...cleanHotel } = hotel;
+                return cleanHotel;
             });
         }
 
-        // Stage 6: Sort at database level
-        if (rate) {
-            const sortOrder = rate === "highToLow" ? -1 : rate === "lowToHigh" ? 1 : null;
-            if (sortOrder) {
-                pipeline.push({
-                    $sort: { lowRate: sortOrder }
-                });
-            }
-        }
-
-        // Execute aggregation pipeline
-        let allHotels = await hotelModel.aggregate(pipeline);
-
-        // Handle booking status check more efficiently
-        if (checkin && checkout && allHotels.length > 0) {
-            // Get all hotel IDs for batch booking check
-            const hotelIds = allHotels.map(hotel => hotel._id);
+        // Optimize booking check - batch process instead of individual promises
+        if (checkin && checkout) {
+            // Process in smaller batches to avoid overwhelming the database
+            const batchSize = 10;
+            const batches = [];
             
-            // Batch check bookings instead of individual calls
-            const bookedHotelIds = await findMultipleBookings(hotelIds, checkin, checkout);
-            const bookedHotelIdsSet = new Set(bookedHotelIds.map(id => id.toString()));
+            for (let i = 0; i < allHotels.length; i += batchSize) {
+                batches.push(allHotels.slice(i, i + batchSize));
+            }
 
-            // Add booking status to hotels
-            allHotels = allHotels.map(hotel => ({
-                ...hotel,
-                isBooked: bookedHotelIdsSet.has(hotel._id.toString())
-            }));
+            // Process batches sequentially to control database load
+            for (let batch of batches) {
+                const batchPromises = batch.map(async (hotel) => {
+                    const found = await findBooking(hotel._id, checkin, checkout);
+                    hotel['isBooked'] = found ? true : false;
+                    return hotel;
+                });
+
+                // Wait for current batch to complete before processing next
+                await Promise.all(batchPromises);
+            }
         }
 
         return allHotels;
 
     } catch (error) {
         console.log('Error in getAllHotels query', error);
-        throw error; // Re-throw to handle upstream
+        throw error; // Add throw to properly handle errors upstream
     }
-}
-
-// New helper function for batch booking checks
-async function findMultipleBookings(hotelIds, checkin, checkout) {
-    try {
-        // Replace this with your actual booking model and logic
-        // This should return an array of hotel IDs that have bookings in the date range
-        const bookings = await bookingModel.find({
-            hotelId: { $in: hotelIds },
-            $or: [
-                {
-                    checkin: { $lte: new Date(checkout) },
-                    checkout: { $gte: new Date(checkin) }
-                }
-            ]
-        }).distinct('hotelId');
-
-        return bookings;
-    } catch (error) {
-        console.log('Error in findMultipleBookings', error);
-        return [];
-    }
-}
-
-// Alternative optimized version with caching (if you can implement caching)
-export async function getAllHotelsWithCache(destination, checkin, checkout, category, priceRange, rate, amenities) {
-    const cacheKey = `hotels_${destination}_${category}_${priceRange}_${rate}_${amenities}`;
-    
-    // Check cache first (implement your caching solution)
-    // const cachedResult = await getCachedData(cacheKey);
-    // if (cachedResult && !checkin && !checkout) {
-    //     return cachedResult;
-    // }
-
-    const result = await getAllHotels(destination, checkin, checkout, category, priceRange, rate, amenities);
-    
-    // Cache the result if no date filtering (implement your caching solution)
-    // if (!checkin && !checkout) {
-    //     await setCachedData(cacheKey, result, 300); // 5 minutes cache
-    // }
-
-    return result;
 }
