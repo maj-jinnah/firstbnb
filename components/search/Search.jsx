@@ -64,7 +64,7 @@ const Search = ({ fromList, destination, checkin, checkout }) => {
                         <h4 className="mt-2">
                             <select
                                 onChange={handleInputChange}
-                                // defaultValue={searchTerm?.destination}
+                                defaultValue={searchTerm?.destination}
                                 className="w-full px-4 py-2 rounded-md border border-black/20 bg-transparent"
                                 name="destination"
                                 id="destination"
