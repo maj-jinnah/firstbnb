@@ -30,7 +30,7 @@ const RegistrationForm = () => {
 
             if (response.status === 201) {
                 toast.success(
-                    responseData.message || "Successfully created a new user."
+                    responseData.message || "Registration successful."
                 );
                 router.push("/login");
             } else {

@@ -33,10 +33,10 @@ const Navbar = async ({ login }) => {
                         <Link href="/bookings">Bookings</Link>
                     </li>
 
-                    <li className="mr-10">
+                    <li className="mr-10 cursor-pointer">
                         {session?.user ? (
                             <div>
-                                <span className="font-bold text-[#023C52]">{session?.user?.name}</span>
+                                <span className="font-bold text-[#023C52] ">{session?.user?.name}</span>
                                 <span> | </span>
                                 <Logout />
                             </div>
@@ -56,5 +56,3 @@ const Navbar = async ({ login }) => {
 };
 
 export default Navbar;
-
-// #023C52

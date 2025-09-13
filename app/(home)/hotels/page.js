@@ -1,7 +1,9 @@
 
 import HotelList from "@/components/hotel/HotelList";
+import LoadingScreen from "@/components/loading-screen";
 import Filter from "@/components/search/Filter";
 import Search from "@/components/search/Search";
+import { Suspense } from "react";
 
 
 const HotelListPage = async ({ searchParams }) => {
@@ -32,15 +34,17 @@ const HotelListPage = async ({ searchParams }) => {
             <section className="py-12">
                 <div className="max-w-7xl mx-auto w-full px-4 grid grid-cols-12 gap-5">
                     <Filter />
-                    <HotelList
-                        destination={destination}
-                        checkin={checkin}
-                        checkout={checkout}
-                        category={refinedCategory(category)}
-                        priceRange={priceRange}
-                        rate={rate}
-                        amenities={amenities}
-                    />
+                    <Suspense fallback={<LoadingScreen />}>
+                        <HotelList
+                            destination={destination}
+                            checkin={checkin}
+                            checkout={checkout}
+                            category={refinedCategory(category)}
+                            priceRange={priceRange}
+                            rate={rate}
+                            amenities={amenities}
+                        />
+                    </Suspense>
                 </div>
             </section>
         </>

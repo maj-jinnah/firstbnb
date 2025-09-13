@@ -140,30 +140,30 @@ const SortByAmenities = () => {
             <form className="space-y-2">
                 {amenitiesList.map((amenity) => (
                     <label
-                        key={amenity.name}
-                        htmlFor={amenity.name}
+                        key={amenity?.name}
+                        htmlFor={amenity?.name}
                         className="group flex items-center px-3 py-2 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer"
                     >
                         <div className="relative flex items-center">
                             <input
                                 className="sr-only"
                                 type="checkbox"
-                                name={amenity.name}
-                                id={amenity.name}
-                                checked={query.includes(amenity.name)}
+                                name={amenity?.name}
+                                id={amenity?.name}
+                                checked={query.includes(amenity?.name)}
                                 onChange={handleChange}
                             />
                             <div
                                 className={`
                                 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200
                                 ${
-                                    query.includes(amenity.name)
+                                    query.includes(amenity?.name)
                                         ? "bg-gradient-to-br from-blue-500 to-purple-600 border-blue-500"
                                         : "border-gray-300 group-hover:border-blue-400"
                                 }
                             `}
                             >
-                                {query.includes(amenity.name) && (
+                                {query.includes(amenity?.name) && (
                                     <svg
                                         className="w-3 h-3 text-white"
                                         fill="none"
@@ -182,18 +182,18 @@ const SortByAmenities = () => {
                         </div>
 
                         <div className="flex items-center gap-3 ml-4">
-                            <span className="text-2xl">{amenity.icon}</span>
+                            {/* <span className="text-2xl">{amenity.icon}</span> */}
                             <span
                                 className={`
                                 font-medium transition-colors duration-200
                                 ${
-                                    query.includes(amenity.name)
+                                    query.includes(amenity?.name)
                                         ? "text-blue-700"
                                         : "text-gray-700 group-hover:text-blue-600"
                                 }
                             `}
                             >
-                                {amenity.label}
+                                {amenity?.label}
                             </span>
                         </div>
                     </label>
